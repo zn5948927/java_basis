@@ -1,0 +1,74 @@
+###服务启动端口号
+server:
+  port: 9527
+###服务名称(服务注册到eureka名称)
+spring:
+  application:
+    name: java-basis
+
+###服务注册到eureka地址
+eureka:
+  client:
+    service-url:
+      #       defaultZone: http://localhost:7001/eureka/
+      defaultZone: http://39.105.146.77:7001/eureka/
+    # defaultZone: http://localhost:7001/eureka/
+
+    ###因为该应用为注册中心，不会注册自己
+    register-with-eureka: true
+    ###是否需要从eureka上获取注册信息
+    fetch-registry: true
+  instance:
+    #表示eureka server上一次收到client的心跳之后，等待下一次心跳的超时时间，在这个时间内若没收到下一次心跳，则将移除该instance。
+    #默认为90秒
+    #如果该值太大，则很可能将流量转发过去的时候，该instance已经不存活了。
+    #如果该值设置太小了，则instance则很可能因为临时的网络抖动而被摘除掉。
+    #该值至少应该大于leaseRenewalIntervalInSeconds
+    lease-expiration-duration-in-seconds: 90
+    #表示eureka client发送心跳给server端的频率。如果在leaseExpirationDurationInSeconds后，server端没有收到client的心跳，则将摘除该instance。
+    #除此之外，如果该instance实现了HealthCheckCallback，并决定让自己unavailable的话，则该instance也不会接收到流量。
+    #默认30秒
+    lease-renewal-interval-in-seconds: 30
+#    prefer-ip-address: true
+feign:
+  hystrix:
+    enabled: true
+
+#### hystrix禁止服务超时时间
+hystrix:
+  command:
+    default:
+      execution:
+        timeout:
+          enabled: false
+
+# 调度中心部署跟地址 [选填]：如调度中心集群部署存在多个地址则用逗号分隔。执行器将会使用该地址进行"执行器心跳注册"和"任务结果回调"；为空则关闭自动注册；
+xxl:
+  job:
+    admin:
+      addresses: http://39.105.146.77:8080/xxl-job-admin
+    executor:
+      # 执行器AppName [选填]：执行器心跳注册分组依据；为空则关闭自动注册
+      appname: xxl-job-executor-user
+      # 执行器IP [选填]：默认为空表示自动获取IP，多网卡时可手动设置指定IP，该IP不会绑定Host仅作为通讯实用；地址信息用于 "执行器注册" 和 "调度中心请求并触发任务"；
+      ip:
+      #执行器端口号 [选填]：小于等于0则自动获取；默认端口为9999，单机部署多个执行器时，注意要配置不同执行器端口；
+      port: 9999
+      # 执行器运行日志文件存储磁盘路径 [选填] ：需要对该路径拥有读写权限；为空则使用默认路径；
+      logpath:
+      # 执行器日志保存天数 [选填] ：值大于3时生效，启用执行器Log文件定期清理功能，否则不生效；
+      logretentiondays: -1
+    # 执行器通讯TOKEN [选填]：非空时启用；
+    accessToken:
+
+multipart.maxFileSize: 150MB
+multipart.maxRequestSize: 150MB
+
+#配置自定义线程池的核心参数
+diy:
+  thread:
+    pool:
+      core-size: 50
+      max-size: 300
+      queue-size: 300
+      keep-alive: 10
