@@ -44,5 +44,21 @@ public class TestDemo {
         while (iterator.hasNext()) {
             System.out.println(iterator.next());
         }
+
+        //把只出现一次的奇数取出来
+        int[] b1 = {3, 5, 5, 10, 10, 10, 11};
+        Map<Integer, Integer> map2 = new HashMap<Integer, Integer>();
+        for (int i = 0; i < b1.length; i++) {
+            if (map2.containsKey(b1[i])) {
+                map2.put(b1[i], map2.get(b1[i]) + 1);
+            } else {
+                map2.put(b1[i], 1);
+            }
+        }
+        for (Map.Entry<Integer, Integer> entry : map2.entrySet()) {
+            if (entry.getKey() % 2 != 0 && entry.getValue() < 2) {
+                System.out.println(entry.getKey());
+            }
+        }
     }
 }
